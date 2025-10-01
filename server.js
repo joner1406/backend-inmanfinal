@@ -132,11 +132,13 @@ app.use(session({
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
+  proxy: true, // AGREGAR ESTA LÍNEA - importante para Render/HTTPS
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    secure: true, // Set to true in production with HTTPS
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: true,
     httpOnly: true,
-    sameSite: 'none'
+    sameSite: 'none',
+    domain: '.onrender.com' // AGREGAR ESTA LÍNEA - permite cookies entre subdominios
   }
 }));
 
