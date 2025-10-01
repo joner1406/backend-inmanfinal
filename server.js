@@ -84,36 +84,28 @@ const allowedOrigins = [
   'https://frontend-inmanfinal.onrender.com'
 ];
 
-// Headers manuales primero
+// Configuración CORS simplificada y directa
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie');
   
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+  // Siempre permitir origins en la whitelist
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
   }
+  
+  // Headers permitidos
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.header('Access-Control-Expose-Headers', 'Set-Cookie');
+  
+  // Manejar preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   next();
 });
-
-// Luego el middleware de CORS
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn('⚠️ Origen bloqueado por CORS:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
 
 app.use(cors({
   origin: function(origin, callback) {
