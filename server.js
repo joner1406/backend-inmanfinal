@@ -340,7 +340,7 @@ app.post('/api/auth/login', async (req, res) => {
     const user = users[0];
     
     // For demo purposes, using plain text password comparison
-const isValidPassword = await bcrypt.compare(password, user.password);
+const isValidPassword = password === user.password;
     
     if (!isValidPassword) {
       return res.status(401).json({ success: false, error: 'Credenciales incorrectas' });
